@@ -28,15 +28,13 @@ the `ecs-backend` module is responsible for creating the specific networking com
 
 the `ecs-frontend` module is responsible for creating the specific networking components, like the load balancer, listener and the service definition for the frontend app.
 
-*
-
 ## Capacity and Performance
 
 ### 1. Horizontal and Vertical scaling:
 
 The horizontal scaling properties can be found in the `locals.tf` file under the `Capacity and Performance Management` section:
 
-```terraform
+```hcl
   // Horizontal Scaling
   backend_service_instances  = // The number of instances for the backend service
   frontend_service_instances = // The number of instances for the frontend service
