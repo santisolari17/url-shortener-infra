@@ -102,3 +102,8 @@ variable "backend_instance_memory" {
   description = "Vertical scaling: memory capacity of the backend service"
   type        = number
 }
+
+variable "cluster_name" {
+  description = "Ecs cluster name"
+  type        = string
+}

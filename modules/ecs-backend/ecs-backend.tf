@@ -49,7 +49,7 @@ resource "aws_route53_record" "backend_hosted_zone_record" {
 # }
 
 resource "aws_lb_target_group" "backend_target_group" {
-  name        = var.backend_target_group_name
+  name        = "${var.backend_target_group_name}-${substr(uuid(), 0, 3)}"
   port        = var.backend_container_port
   protocol    = "HTTP"
   target_type = "ip"
@@ -62,6 +62,11 @@ resource "aws_lb_target_group" "backend_target_group" {
     timeout             = 10
     healthy_threshold   = 3
     unhealthy_threshold = 3
+  }
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes        = [name]
   }
 }
 
@@ -108,7 +113,6 @@ resource "aws_lb_listener_rule" "listener_rule" {
 resource "aws_cloudwatch_log_group" "backend_log_group" {
   name              = var.backend_cloudwatch_log_group_name
   retention_in_days = 1
-
   tags = {
     Application = "url shortener backend container logs"
   }
@@ -165,5 +169,29 @@ resource "aws_ecs_service" "backend_app_service" {
     subnets          = ["${var.default_subnet_a_id}", "${var.default_subnet_b_id}", "${var.default_subnet_c_id}"]
     assign_public_ip = true
     security_groups  = ["${var.service_security_group_id}"]
+  }
+}
+
+# Create an ECS Auto Scaling Policy
+resource "aws_appautoscaling_target" "backend_ecs_autoscaling_target" {
+  max_capacity       = 10
+  min_capacity       = 2
+  resource_id        = "service/${var.cluster_name}/${aws_ecs_service.backend_app_service.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+resource "aws_appautoscaling_policy" "backend_scaling_policy" {
+  name               = "backend_scaling_policy"
+  service_namespace  = aws_appautoscaling_target.backend_ecs_autoscaling_target.service_namespace
+  scalable_dimension = aws_appautoscaling_target.backend_ecs_autoscaling_target.scalable_dimension
+  resource_id        = aws_appautoscaling_target.backend_ecs_autoscaling_target.resource_id
+  policy_type        = "TargetTrackingScaling"
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+
+    target_value = 50.0
   }
 }

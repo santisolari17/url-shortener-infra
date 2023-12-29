@@ -7,13 +7,13 @@ terraform {
     }
   }
 
-  # backend "s3" {
-  #   bucket         = "spg-tf-state-bucket"
-  #   key            = "url-shortener-tf/terraform.tfstate"
-  #   region         = "us-east-2"
-  #   dynamodb_table = "spg-tf-state"
-  #   encrypt        = true
-  # }
+  backend "s3" {
+    bucket         = "spg-tf-state-bucket"
+    key            = "url-shortener-tf/terraform.tfstate"
+    region         = "us-east-2"
+    dynamodb_table = "spg-tf-state"
+    encrypt        = true
+  }
 }
 
 module "tfState" {
@@ -53,6 +53,7 @@ module "ecsBackend" {
   backend_ecr_repo_url = module.ecrRepo.backend_repository_url
 
   cluster_id                      = module.ecsCluster.cluster_id
+  cluster_name                    = module.ecsCluster.cluster_name
   default_vpc_id                  = module.ecsCluster.default_vpc_id
   default_subnet_a_id             = module.ecsCluster.default_subnet_a_id
   default_subnet_b_id             = module.ecsCluster.default_subnet_b_id
