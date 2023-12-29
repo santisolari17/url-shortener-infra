@@ -6,6 +6,12 @@ locals {
   dynamo_table_key_attr   = "urlId"
   dynamo_table_index_attr = "longUrl"
 
+  # App events table
+  dynamo_events_table_name       = "appEvents"
+  dynamo_events_table_key_attr   = "eventId"
+  dynamo_events_table_index_attr = "eventType"
+  dynamo_events_table_range_attr = "lastVisited"
+
   url_shortener_backend_repo_name  = "url-shortener-backend-repo"
   url_shortener_frontend_repo_name = "url-shortener-frontend-repo"
 
@@ -34,11 +40,11 @@ locals {
 
   // Capacity and Performance Management
   // Horizontal Scaling
-  backend_service_instances  = 2
-  frontend_service_instances = 1
+  backend_service_instances  = 3
+  frontend_service_instances = 2
   // Vertical scaling
-  backend_instance_cpu     = 512
-  backend_instance_memory  = 1024
-  frontend_instance_cpu    = 256
-  frontend_instance_memory = 512
+  backend_instance_cpu     = 1024
+  backend_instance_memory  = 2048
+  frontend_instance_cpu    = 512
+  frontend_instance_memory = 1024
 }

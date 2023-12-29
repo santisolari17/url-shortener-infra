@@ -28,6 +28,11 @@ module "database" {
   dynamo_table_name       = local.dynamo_table_name
   dynamo_table_key_attr   = local.dynamo_table_key_attr
   dynamo_table_index_attr = local.dynamo_table_index_attr
+
+  dynamo_events_table_name       = local.dynamo_events_table_name
+  dynamo_events_table_key_attr   = local.dynamo_events_table_key_attr
+  dynamo_events_table_index_attr = local.dynamo_events_table_index_attr
+  dynamo_events_table_range_attr = local.dynamo_events_table_range_attr
 }
 
 module "ecrRepo" {
@@ -84,6 +89,7 @@ module "ecsFrontend" {
   frontend_ecr_repo_url = module.ecrRepo.frontend_repository_url
 
   cluster_id                      = module.ecsCluster.cluster_id
+  cluster_name                    = module.ecsCluster.cluster_name
   default_vpc_id                  = module.ecsCluster.default_vpc_id
   default_subnet_a_id             = module.ecsCluster.default_subnet_a_id
   default_subnet_b_id             = module.ecsCluster.default_subnet_b_id
