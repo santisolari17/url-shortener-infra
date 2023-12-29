@@ -175,7 +175,7 @@ resource "aws_ecs_service" "backend_app_service" {
 # Create an ECS Auto Scaling Policy
 resource "aws_appautoscaling_target" "backend_ecs_autoscaling_target" {
   max_capacity       = 10
-  min_capacity       = 2
+  min_capacity       = 3
   resource_id        = "service/${var.cluster_name}/${aws_ecs_service.backend_app_service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
@@ -192,6 +192,6 @@ resource "aws_appautoscaling_policy" "backend_scaling_policy" {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
 
-    target_value = 50.0
+    target_value = 10.0
   }
 }

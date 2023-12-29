@@ -43,8 +43,8 @@ locals {
   backend_service_instances  = 3
   frontend_service_instances = 2
   // Vertical scaling
-  backend_instance_cpu     = 1024
-  backend_instance_memory  = 2048
+  backend_instance_cpu     = 2048
+  backend_instance_memory  = 4096
   frontend_instance_cpu    = 512
   frontend_instance_memory = 1024
 }
